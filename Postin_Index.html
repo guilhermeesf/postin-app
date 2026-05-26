@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Adega Postin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0c0f1a;
+  --surface:  #131726;
+  --card:     #1a1f30;
+  --border:   #252c42;
+  --gold:     #c8a951;
+  --gold2:    #e8c96a;
+  --navy:     #1a3a5c;
+  --green:    #2ecc71;
+  --red:      #e74c3c;
+  --blue:     #4a90e2;
+  --text:     #eef0f8;
+  --muted:    #6b7494;
+  --radius:   14px;
+  --safe-b:   env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: none;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.logo span { color: var(--gold); }
+.badge-data {
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* ── CARDS RESUMO TOPO ── */
+.resumo-topo {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 12px 14px 0;
+}
+.mini-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 10px 8px;
+  text-align: center;
+}
+.mini-card .mc-label { font-size: 0.62rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+.mini-card .mc-val   { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-top: 3px; }
+.mc-val.verde   { color: var(--green); }
+.mc-val.vermelho{ color: var(--red); }
+.mc-val.dourado { color: var(--gold2); }
+
+/* ── NAV ── */
+nav {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  margin-top: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 57px;
+  z-index: 99;
+}
+nav::-webkit-scrollbar { display: none; }
+nav button {
+  flex: 1;
+  min-width: 72px;
+  padding: 11px 6px 9px;
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: color .15s, border-color .15s;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+nav button .icon { font-size: 1.1rem; }
+nav button.ativo { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 14px 110px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── SECOES ── */
+.secao { display: none; }
+.secao.ativa { display: block; }
+
+/* ── CARD FORM ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── FORM ── */
+.form-group { margin-bottom: 12px; }
+.lbl {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+input[type=text], input[type=number], input[type=date], select, textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 13px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color .15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+select option { background: var(--surface); color: var(--text); }
+textarea { resize: none; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ── TOTAL BOX ── */
+.total-box {
+  background: linear-gradient(135deg, var(--navy), #0d2540);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 13px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 14px 0;
+}
+.total-box small { font-size: 0.72rem; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.total-box span  { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--gold2); }
+
+/* ── BOTÕES ── */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  letter-spacing: .03em;
+  transition: opacity .15s, transform .1s;
+}
+.btn:active { opacity: .8; transform: scale(.98); }
+.btn-gold    { background: linear-gradient(135deg, #b8941f, var(--gold2)); color: #0c0f1a; }
+.btn-green   { background: linear-gradient(135deg, #1a9e50, var(--green)); color: #fff; }
+.btn-red     { background: linear-gradient(135deg, #c0392b, var(--red)); color: #fff; }
+.btn-navy    { background: linear-gradient(135deg, var(--navy), #2a5a8c); color: #fff; }
+.btn-outline { background: none; border: 1.5px solid var(--border); color: var(--text); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: calc(82px + var(--safe-b));
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 11px 20px;
+  border-radius: 30px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  max-width: 88vw;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.ok   { border-color: var(--green); color: var(--green); }
+#toast.erro { border-color: var(--red); color: var(--red); }
+
+/* ── LISTA CONTAS ── */
+.conta-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 13px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.conta-item.vencida { border-color: rgba(231,76,60,.4); background: rgba(231,76,60,.06); }
+.conta-info { flex: 1; min-width: 0; }
+.conta-info .cnome { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conta-info .csub  { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.conta-valor { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--gold2); font-size: 0.9rem; flex-shrink: 0; }
+.btn-pagar { padding: 6px 12px; border: none; border-radius: 7px; background: var(--green); color: #fff; font-size: 0.72rem; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+
+/* ── RESUMO FECHAMENTO ── */
+.resumo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.res-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 12px;
+}
+.res-item.full { grid-column: 1/-1; }
+.res-item .rl  { font-size: 0.68rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+.res-item .rv  { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.25rem; }
+.rv.verde    { color: var(--green); }
+.rv.vermelho { color: var(--red); }
+.rv.dourado  { color: var(--gold2); }
+
+/* ── WPP ── */
+#textoWpp {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 0.8rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  color: var(--text);
+  min-height: 140px;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+/* ── LOADER ── */
+.spin {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sp .6s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+@keyframes sp { to { transform: rotate(360deg); } }
+
+/* ── DIVISOR ── */
+.divider { height: 1px; background: var(--border); margin: 4px 0 14px; }
+
+/* ── CONFIG aviso ── */
+.aviso {
+  background: rgba(200,169,81,.08);
+  border: 1px solid rgba(200,169,81,.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.8rem;
+  color: var(--gold);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.aviso strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">ADEGA <span>POSTIN</span> 🍺</div>
+  <span class="badge-data" id="dataHoje"></span>
+</header>
+
+<!-- ── MINI CARDS RESUMO ── -->
+<div class="resumo-topo">
+  <div class="mini-card">
+    <div class="mc-label">Receita Hoje</div>
+    <div class="mc-val verde" id="rt-receita">—</div>
+  </div>
+  <div class="mini-card">
+    <div class="mc-label">Despesa Hoje</div>
+    <div class="mc-val vermelho" id="rt-despesa">—</div>
+  </div>
+  <div class="mini-card">
+    <div class="mc-label">Saldo</div>
+    <div class="mc-val dourado" id="rt-saldo">—</div>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <button class="ativo" onclick="trocarAba('fechamento',this)">
+    <span class="icon">☀️</span>Fechamento
+  </button>
+  <button onclick="trocarAba('despesa',this)">
+    <span class="icon">💸</span>Despesa
+  </button>
+  <button onclick="trocarAba('contas',this)">
+    <span class="icon">📅</span>Contas
+  </button>
+  <button onclick="trocarAba('resumo',this)">
+    <span class="icon">📊</span>Resumo
+  </button>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- ══ FECHAMENTO DO DIA ══ -->
+  <section id="sec-fechamento" class="secao ativa">
+    <div class="card">
+      <div class="card-title">☀️ Fechamento do Dia — Receita</div>
+
+      <div class="form-group">
+        <label class="lbl">📅 Data</label>
+        <input type="date" id="f-data">
+      </div>
+
+      <div class="row2">
+        <div class="form-group">
+          <label class="lbl">💳 Débito (R$)</label>
+          <input type="number" id="f-debito" value="0" step="0.01" min="0" inputmode="decimal" oninput="calcTotal()">
+        </div>
+        <div class="form-group">
+          <label class="lbl">💳 Crédito (R$)</label>
+          <input type="number" id="f-credito" value="0" step="0.01" min="0" inputmode="decimal" oninput="calcTotal()">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="form-group">
+          <label class="lbl">📱 PIX (R$)</label>
+          <input type="number" id="f-pix" value="0" step="0.01" min="0" inputmode="decimal" oninput="calcTotal()">
+        </div>
+        <div class="form-group">
+          <label class="lbl">💵 Dinheiro (R$)</label>
+          <input type="number" id="f-dinheiro" value="0" step="0.01" min="0" inputmode="decimal" oninput="calcTotal()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="lbl">🛵 Delivery (R$)</label>
+        <input type="number" id="f-delivery" value="0" step="0.01" min="0" inputmode="decimal" oninput="calcTotal()">
+      </div>
+
+      <div class="form-group">
+        <label class="lbl">Observação</label>
+        <input type="text" id="f-obs" placeholder="Ex: movimento fraco, feriado...">
+      </div>
+
+      <div class="total-box">
+        <small>Total do Dia</small>
+        <span id="f-total">R$ 0,00</span>
+      </div>
+
+      <button class="btn btn-gold" onclick="lancarFechamento()">💾 Salvar Fechamento</button>
+    </div>
+  </section>
+
+  <!-- ══ DESPESA ══ -->
+  <section id="sec-despesa" class="secao">
+    <div class="card">
+      <div class="card-title">💸 Lançar Despesa</div>
+
+      <div class="form-group">
+        <label class="lbl">📅 Data</label>
+        <input type="date" id="d-data">
+      </div>
+
+      <div class="form-group">
+        <label class="lbl">Categoria *</label>
+        <select id="d-cat">
+          <option value="">— Carregando... —</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="lbl">Descrição *</label>
+        <input type="text" id="d-desc" placeholder="Ex: Mercadoria — Distribuidora X">
+      </div>
+
+      <div class="row2">
+        <div class="form-group">
+          <label class="lbl">Valor (R$) *</label>
+          <input type="number" id="d-valor" placeholder="0,00" step="0.01" min="0" inputmode="decimal">
+        </div>
+        <div class="form-group">
+          <label class="lbl">Forma de Pgto</label>
+          <select id="d-pgto">
+            <option>PIX</option>
+            <option>Boleto</option>
+            <option>Transferência</option>
+            <option>Cartão Débito</option>
+            <option>Cartão Crédito</option>
+            <option>Dinheiro</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="lbl">Observação</label>
+        <input type="text" id="d-obs" placeholder="Opcional">
+      </div>
+
+      <button class="btn btn-red" onclick="lancarDespesa()">💾 Salvar Despesa</button>
+    </div>
+  </section>
+
+  <!-- ══ CONTAS A PAGAR ══ -->
+  <section id="sec-contas" class="secao">
+
+    <div class="card">
+      <div class="card-title">➕ Nova Conta a Pagar</div>
+
+      <div class="form-group">
+        <label class="lbl">Descrição *</label>
+        <input type="text" id="c-desc" placeholder="Ex: Mercadoria — Distribuidora X">
+      </div>
+      <div class="form-group">
+        <label class="lbl">Fornecedor / Credor</label>
+        <input type="text" id="c-forn" placeholder="Ex: Cervejaria ABC">
+      </div>
+      <div class="row2">
+        <div class="form-group">
+          <label class="lbl">Valor (R$) *</label>
+          <input type="number" id="c-valor" placeholder="0,00" step="0.01" min="0" inputmode="decimal">
+        </div>
+        <div class="form-group">
+          <label class="lbl">Vencimento *</label>
+          <input type="date" id="c-venc">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="lbl">Forma de Pagamento</label>
+        <select id="c-pgto">
+          <option>PIX</option><option>Boleto</option><option>Transferência</option>
+          <option>Cartão Débito</option><option>Cartão Crédito</option>
+          <option>Dinheiro</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="lbl">Observação</label>
+        <input type="text" id="c-obs" placeholder="Ex: nº do boleto, prazo negociado...">
+      </div>
+      <button class="btn btn-navy" onclick="lancarContaPagar()">💾 Registrar Conta</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Contas Pendentes</div>
+      <div id="lista-contas"><div style="color:var(--muted);font-size:.82rem;text-align:center;padding:12px 0">Carregando...</div></div>
+      <button class="btn btn-outline" style="margin-top:10px;font-size:.8rem;padding:10px" onclick="carregarContas()">🔄 Atualizar lista</button>
+    </div>
+
+  </section>
+
+  <!-- ══ RESUMO SEMANAL ══ -->
+  <section id="sec-resumo" class="secao">
+
+    <div class="resumo-grid">
+      <div class="res-item">
+        <div class="rl">Receita Hoje</div>
+        <div class="rv verde" id="rs-rec">R$ —</div>
+      </div>
+      <div class="res-item">
+        <div class="rl">Despesa Hoje</div>
+        <div class="rv vermelho" id="rs-desp">R$ —</div>
+      </div>
+      <div class="res-item full">
+        <div class="rl">Saldo do Dia</div>
+        <div class="rv dourado" id="rs-saldo">R$ —</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📲 Resumo Semanal — WhatsApp</div>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Gera o texto da semana anterior (seg–dom) para copiar no WhatsApp.</p>
+      <button class="btn btn-green" style="margin-bottom:12px" onclick="gerarResumo()">📊 Gerar Resumo da Semana</button>
+      <div id="textoWpp" style="display:none"></div>
+      <button id="btn-copiar" class="btn btn-navy" style="display:none" onclick="copiarWpp()">📋 Copiar para WhatsApp</button>
+    </div>
+
+  </section>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG — cole aqui a URL do Web App após publicar
+// ══════════════════════════════════════════
+const WEB_APP_URL = '';
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+const hoje = new Date();
+const ontem = new Date(hoje); ontem.setDate(hoje.getDate() - 1);
+
+function fmtDate(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+function fmtBR(d) {
+  return d.toLocaleDateString('pt-BR');
+}
+function fmtVal(v) {
+  return 'R$ ' + (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+}
+
+document.getElementById('dataHoje').textContent = fmtBR(hoje);
+document.getElementById('f-data').value  = fmtDate(ontem);
+document.getElementById('d-data').value  = fmtDate(hoje);
+
+// ══════════════════════════════════════════
+//  ABAS
+// ══════════════════════════════════════════
+function trocarAba(id, btn) {
+  document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'));
+  document.getElementById('sec-' + id).classList.add('ativa');
+  btn.classList.add('ativo');
+  if (id === 'contas')  carregarContas();
+  if (id === 'resumo')  atualizarResumoTopo();
+  if (id === 'despesa') carregarCategorias();
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function toast(msg, tipo) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + (tipo || 'ok');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 2800);
+}
+
+// ══════════════════════════════════════════
+//  API
+// ══════════════════════════════════════════
+async function api(acao, dados) {
+  if (!WEB_APP_URL) {
+    toast('⚠️ Configure o WEB_APP_URL no código', 'erro');
+    return null;
+  }
+  try {
+    const res = await fetch(WEB_APP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ acao, dados: dados || {} }),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    return await res.json();
+  } catch(e) {
+    toast('Erro de conexão com a planilha', 'erro');
+    return null;
+  }
+}
+
+// ══════════════════════════════════════════
+//  TOTAL FECHAMENTO
+// ══════════════════════════════════════════
+function calcTotal() {
+  const ids = ['f-debito','f-credito','f-pix','f-dinheiro','f-delivery'];
+  const v = ids.reduce((s,id) => s + (parseFloat(document.getElementById(id).value)||0), 0);
+  document.getElementById('f-total').textContent = fmtVal(v);
+  return v;
+}
+
+// ══════════════════════════════════════════
+//  FECHAMENTO DO DIA
+// ══════════════════════════════════════════
+async function lancarFechamento() {
+  const data    = document.getElementById('f-data').value;
+  const debito  = parseFloat(document.getElementById('f-debito').value)||0;
+  const credito = parseFloat(document.getElementById('f-credito').value)||0;
+  const pix     = parseFloat(document.getElementById('f-pix').value)||0;
+  const dinheiro= parseFloat(document.getElementById('f-dinheiro').value)||0;
+  const delivery= parseFloat(document.getElementById('f-delivery').value)||0;
+  const obs     = document.getElementById('f-obs').value.trim();
+  const total   = debito+credito+pix+dinheiro+delivery;
+
+  if (!data)   { toast('Informe a data', 'erro'); return; }
+  if (total<=0){ toast('Informe ao menos um valor', 'erro'); return; }
+
+  const btn = document.querySelector('#sec-fechamento .btn');
+  btn.innerHTML = '<span class="spin"></span>Salvando...';
+  btn.disabled = true;
+
+  const res = await api('lancar_fechamento', {data,debito,credito,pix,dinheiro,delivery,obs});
+  btn.innerHTML = '💾 Salvar Fechamento';
+  btn.disabled = false;
+
+  if (res?.sucesso) {
+    toast('✅ Fechamento salvo! ' + fmtVal(total));
+    ['f-debito','f-credito','f-pix','f-dinheiro','f-delivery'].forEach(id => {
+      document.getElementById(id).value = '0';
+    });
+    document.getElementById('f-obs').value = '';
+    calcTotal();
+    atualizarResumoTopo();
+  } else {
+    toast(res?.mensagem || 'Erro ao salvar', 'erro');
+  }
+}
+
+// ══════════════════════════════════════════
+//  CATEGORIAS (carrega da planilha)
+// ══════════════════════════════════════════
+let categoriasCache = null;
+
+async function carregarCategorias() {
+  if (categoriasCache) return;
+  const res = await api('buscar_categorias');
+  if (res?.sucesso && res.categorias?.length) {
+    categoriasCache = res.categorias;
+    const sel = document.getElementById('d-cat');
+    sel.innerHTML = '<option value="">— Selecione —</option>' +
+      res.categorias.map(c => `<option value="${c}">${c}</option>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════
+//  DESPESA
+// ══════════════════════════════════════════
+async function lancarDespesa() {
+  const data  = document.getElementById('d-data').value;
+  const cat   = document.getElementById('d-cat').value;
+  const desc  = document.getElementById('d-desc').value.trim();
+  const val   = parseFloat(document.getElementById('d-valor').value);
+  const pgto  = document.getElementById('d-pgto').value;
+  const obs   = document.getElementById('d-obs').value.trim();
+
+  if (!cat)             { toast('Selecione uma categoria', 'erro'); return; }
+  if (!desc)            { toast('Informe a descrição', 'erro'); return; }
+  if (!val || val <= 0) { toast('Informe um valor válido', 'erro'); return; }
+
+  const btn = document.querySelector('#sec-despesa .btn');
+  btn.innerHTML = '<span class="spin"></span>Salvando...';
+  btn.disabled = true;
+
+  const res = await api('lancar_despesa', {data,cat,desc,val,pgto,obs});
+  btn.innerHTML = '💾 Salvar Despesa';
+  btn.disabled = false;
+
+  if (res?.sucesso) {
+    toast('✅ Despesa de ' + fmtVal(val) + ' salva!');
+    document.getElementById('d-desc').value  = '';
+    document.getElementById('d-valor').value = '';
+    document.getElementById('d-obs').value   = '';
+    document.getElementById('d-cat').value   = '';
+  } else {
+    toast(res?.mensagem || 'Erro ao salvar', 'erro');
+  }
+}
+
+// ══════════════════════════════════════════
+//  CONTA A PAGAR
+// ══════════════════════════════════════════
+async function lancarContaPagar() {
+  const desc  = document.getElementById('c-desc').value.trim();
+  const forn  = document.getElementById('c-forn').value.trim();
+  const val   = parseFloat(document.getElementById('c-valor').value);
+  const venc  = document.getElementById('c-venc').value;
+  const pgto  = document.getElementById('c-pgto').value;
+  const obs   = document.getElementById('c-obs').value.trim();
+
+  if (!desc)            { toast('Informe a descrição', 'erro'); return; }
+  if (!venc)            { toast('Informe o vencimento', 'erro'); return; }
+  if (!val || val <= 0) { toast('Informe um valor válido', 'erro'); return; }
+
+  const btn = document.querySelector('#sec-contas .card:first-child .btn');
+  btn.innerHTML = '<span class="spin"></span>Salvando...';
+  btn.disabled = true;
+
+  const res = await api('lancar_conta_pagar', {desc,forn,val,venc,pgto,obs});
+  btn.innerHTML = '💾 Registrar Conta';
+  btn.disabled = false;
+
+  if (res?.sucesso) {
+    toast('✅ Conta registrada!');
+    ['c-desc','c-forn','c-valor','c-venc','c-obs'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    carregarContas();
+  } else {
+    toast(res?.mensagem || 'Erro ao salvar', 'erro');
+  }
+}
+
+// ══════════════════════════════════════════
+//  LISTAR CONTAS PENDENTES
+// ══════════════════════════════════════════
+async function carregarContas() {
+  const lista = document.getElementById('lista-contas');
+  lista.innerHTML = '<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:12px 0"><span class="spin" style="border-top-color:var(--muted)"></span> Carregando...</div>';
+  const res = await api('buscar_contas_pagar');
+  if (!res?.sucesso) {
+    lista.innerHTML = '<div style="color:var(--red);font-size:.82rem;text-align:center;padding:8px">Erro ao carregar</div>';
+    return;
+  }
+  if (!res.contas || res.contas.length === 0) {
+    lista.innerHTML = '<div style="color:var(--green);font-size:.85rem;text-align:center;padding:12px">✅ Nenhuma conta pendente!</div>';
+    return;
+  }
+  lista.innerHTML = res.contas.map(c => {
+    const vencida = c.status === 'Vencido';
+    return `<div class="conta-item ${vencida ? 'vencida' : ''}">
+      <div class="conta-info">
+        <div class="cnome">${c.desc}</div>
+        <div class="csub">${c.forn || '—'} • Vence: ${c.vencimento} ${vencida ? '🔴' : '🟡'}</div>
+      </div>
+      <div class="conta-valor">${fmtVal(c.valor)}</div>
+      <button class="btn-pagar" onclick="pagarConta(${c.linha})">✓ Pago</button>
+    </div>`;
+  }).join('');
+}
+
+async function pagarConta(linha) {
+  const res = await api('pagar_conta', { linha });
+  if (res?.sucesso) { toast('✅ Conta marcada como paga!'); carregarContas(); }
+  else toast('Erro ao atualizar', 'erro');
+}
+
+// ══════════════════════════════════════════
+//  RESUMO TOPO (mini cards)
+// ══════════════════════════════════════════
+async function atualizarResumoTopo() {
+  const res = await api('resumo_hoje');
+  if (!res?.sucesso) return;
+  document.getElementById('rt-receita').textContent = fmtVal(res.receita);
+  document.getElementById('rt-despesa').textContent = fmtVal(res.despesa);
+  document.getElementById('rt-saldo').textContent   = fmtVal(res.saldo);
+  document.getElementById('rs-rec').textContent     = fmtVal(res.receita);
+  document.getElementById('rs-desp').textContent    = fmtVal(res.despesa);
+  document.getElementById('rs-saldo').textContent   = fmtVal(res.saldo);
+}
+
+// ══════════════════════════════════════════
+//  GERAR RESUMO WHATSAPP (client-side)
+// ══════════════════════════════════════════
+async function gerarResumo() {
+  const btn = document.querySelector('#sec-resumo .btn-green');
+  btn.innerHTML = '<span class="spin"></span>Gerando...';
+  btn.disabled = true;
+
+  const res = await api('resumo_semana');
+  btn.innerHTML = '📊 Gerar Resumo da Semana';
+  btn.disabled = false;
+
+  if (!res?.sucesso || !res.texto) {
+    toast('Erro ao gerar resumo', 'erro');
+    return;
+  }
+
+  const el = document.getElementById('textoWpp');
+  el.textContent = res.texto;
+  el.style.display = 'block';
+  document.getElementById('btn-copiar').style.display = 'block';
+}
+
+function copiarWpp() {
+  const txt = document.getElementById('textoWpp').textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(() => toast('✅ Copiado! Cole no WhatsApp.'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ Copiado!');
+  }
+}
+
+// ══════════════════════════════════════════
+//  INICIALIZAÇÃO
+// ══════════════════════════════════════════
+calcTotal();
+atualizarResumoTopo();
+carregarCategorias();
+</script>
+</body>
+</html>
